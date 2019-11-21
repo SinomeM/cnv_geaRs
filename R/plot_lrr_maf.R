@@ -39,19 +39,25 @@ plot_lrr_maf <- function(sam, chr, cnv.start, cnv.end, region = 5, final.rep,
     # Region to be plotted
     dat <- tmp %>% filter(Position >= (cnv.start - (region)*1000000) & 
                               Position <= (cnv.end + (region)*1000000))
+    appr %<>% filter(appr.x >= (cnv.start - (region)*1000000) & 
+                         appr.x <= (cnv.end + (region)*1000000))
     
     # Plot LRR 
     pl1 <- ggplot(dat, aes(x = Position, y = Log.R.Ratio)) +
         geom_point(size = 1, colour = "#FF9999") +
         geom_line(data = appr, aes(x = appr.x, y = appr.y), colour = "black") + 
         geom_segment(aes(x = cnv.start, xend = cnv.end, y = 0, yend = 0),
-                     size = 0.2, colour = "#FF0000")
+                     size = 0.2, colour = "#FF0000") +
+        xlab("Position (bp)") +
+        scale_x_continuous(labels = scales::comma)
     
     # Plot MAF 
     pl2 <- ggplot(dat, aes(x = Position, y = B.allele.Freq)) +
         geom_point(size = 1, colour = "#33CCCC") +
         geom_segment(aes(x = cnv.start, xend = cnv.end, y = 0.5, yend = 0.5),
-                     size = 0.2, colour = "#33CCFF")
+                     size = 0.2, colour = "#33CCFF") +
+        xlab("Position (bp)")+
+        scale_x_continuous(labels = scales::comma)
     
     # Combine 
     pl <- cowplot::plot_grid(pl1, pl2, nrow = 2)
