@@ -1,0 +1,30 @@
+Package: cnvgeaRs
+Type: Package
+Title: A little gear kit to manage CNV calling results
+Version: 0.1.1
+Date: 2019-10-10
+Author: Simone Montalbano
+Maintainer: Simone Montalbano <simone.montalbano@protonmail.com>
+Description: This package contains a set of functions that can be
+    useful when interpreting the results of a CNV calling algorithm
+    or pipeline. It was designed to merge and analyze the results of 
+    two different pipelines using Illumina SNP array data from an ASD
+    related study, but can be used in various situation.
+    In particular the locus() function is useful per se as an easy 
+    way to add the chromosomal locus information to large datasets of 
+    CNV-like entries (anything consisting of "chr", "start", "end", 
+    potentially also a gene) being optimized for parallel processing.
+    Originally it was used as a preprocessing step for the inter_comp()
+    function.
+    lrr_plot() function instead is specifically designed for Illumina 
+    array data and takes as input a file in the format of "FinalReport"
+    and plots LRR values. Also inter_comp() is specifically desgigned
+    for array data and for comparison uses the number of common markers
+    (SNPs) instead of raw chromosomal coordinate.
+    The following packages are required for cnvgeaRs functions to work:
+    "dplyr", "magrittr", "ggplot2", "data.table", "foreach", "doParallel", 
+    "RcppRoll", "stats".
+License: GPL-3
+RoxygenNote: 6.1.1
+NeedsCompilation: no
+Packaged: 2019-10-15 07:19:39 UTC; simone.montalbano

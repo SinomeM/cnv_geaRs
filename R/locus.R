@@ -2,10 +2,10 @@
 #' 
 #' @description 
 #' \code{locus} Extract genomic locus information to each 
-#' row of a dataframe consisting of CNV-like entries
+#' row of a data-frame consisting of CNV-like entries
 #' 
 #' @details 
-#' This function takes as input a dataframe containg CNV calls
+#' This function takes as input a data-frame containing CNV calls
 #' or any similar entries and returns the same dataframe with 
 #' three additional columns: "loc.str", "loc.end", and "locus".
 #' This can be useful per se and it is a required step for
@@ -20,21 +20,25 @@
 #' cytobands file of the selected assembly (default is "hg19"), 
 #' it is possible to pass a local file as \code{bands} setting
 #' the \code{whichCyto} parameter to \code{"local"} instead. 
+#' If a local file is used the fist four columns must be "chr", "start", 
+#' "end", "locus". Columns name is not relevant as long as the corrected 
+#' order is maintained. 
+#' \newline
 #' The function uses a for loop and this is its major bottleneck. 
 #' In order to speed up the process the input dataset is splitted 
 #' according to the \code{n.cores} parameter and the splits are 
-#' processed in parallel. As an example, processing a dataframe with 
+#' processed in parallel. As an example, processing a data-frame with 
 #' ~10500 entries takes about 10 seconds using 4 cores, and about 4 
 #' seconds using 16 cores on our system, while the same work using 
 #' only one core takes around 31 seconds.
 #' Default number of cores is 4, in this way it should 
 #' work with default parameters even on a laptop.
 #' 
-#' @param cnv.in a dataframe consisting of CNVcalls
+#' @param cnv.in a data-frame consisting of CNVcalls
 #' @param whichCyto "remote" or "local"
-#' @param bands dataframe containg genomic locus reference for the 
+#' @param bands data-frame containing genomic locus reference for the 
 #' selected assembly
-#' @param assembly genomic assobly, either "hg18", "hg19" or "hg38"
+#' @param assembly genomic assembly, either "hg18", "hg19" or "hg38"
 #' @param n.cores number of usable CPU cores
 #' 
 #' @export
@@ -42,6 +46,7 @@
 #' @return cnv.out
 #' 
 #' @author Simone Montalbano simone.montalbano@protonmail.com
+
 
 
 locus <- 

@@ -1,27 +1,28 @@
 #' @title Inter results CNV calls comparison
 #' 
-#' @description \code{inter_comp} compare results from different 
+#' @description 
+#' \code{inter_comp} compare results from different 
 #' methods to find the common calls, or find the unique calls 
 #' between groups in cases/controls scenario. 
 #' 
 #' @details
 #' This function compare the results of CNV calling methods. It can
-#' be useful when merging results from the same data but different 
-#' pipelines in order to highlight the common calls (of higher 
-#' cofnidence) and avoid duplicate (but not identical) calls.
+#' be useful when merging results from different pipelines on the same 
+#' data, in order to highlight the common calls (of higher 
+#' confidence) and avoid duplicate calls.
 #' It can also handle case/control situations (selecting the
-#' calls present in cases only), and (rudimetally) family-based 
-#' studies. 
+#' calls present in cases only), and family-based 
+#' studies.
 #' \newline
 #' The function is specifically designed to work on SNP array data
-#' and require SNP position information to process calls. In particular
+#' and require SNPs position information to process calls. In particular,
 #' the actual comparison is made on the markers rather than on the raw
-#' genomic coordinates. As an example, in default settind two calls 
-#' will be treated as the same CNV if they share 50% or more of the 
+#' genomic coordinates. As an example, in default settings, two calls 
+#' will be treated as the same if they share 50% or more of the 
 #' markers. 
-#' Inside the funcion there is a filter based on the number of markers
-#' , default bekaviour is to eliminate the calls with less than 10
-#' markers. If this is undesired simpli set \code{min.markers} to 0.
+#' Inside the function there is a filter based on the number of markers,
+#' default behavior is to eliminate the calls with less than 10
+#' markers. If this is undesired simply set \code{min.markers} to 0.
 #' \newline
 #' There are three possible modes that can be set with the parameter
 #' \code{comp.type}. If set to "inter" the function will scan \code{in.a} 
@@ -33,20 +34,27 @@
 #' It will then attempt to select the  calls of the case that are not
 #' replicated in control. The difference between the two is that 
 #' "case/control" assume one-sample-one-object while "matched" account
-#' for family ID and can hadle more than one sample per object.
+#' for family ID and can handle more than one sample per object.
 #' \newline
 #' Required input files are: 
-#' \code{markers} is a dataframe containg information about the SNP 
+#' \code{markers} is a data-frame containing information about the SNP 
 #' markers of the array used (required columns: "chr" "position"
 #' "snp");
-#' \code{in.a in.b} are two dataframe containing the actual CNV calls
+#' \code{in.a in.b} are two data-frame containing the actual CNV calls
 #' (required columns: "chr" "start" "end" "CN" "loc.start" "loc.end").
+#' \newline
+#' The function uses a for loop and this is its major bottleneck. 
+#' In order to speed up the process the input dataset is splitted 
+#' according to the \code{n.cores} parameter and the splits are 
+#' processed in parallel.
+#' Default number of cores is 4, in this way it should 
+#' work with default parameters even on a laptop.
 #' 
 #' @param in.b First dataset or Case(s)
 #' @param in.b Second dataset or Control(s)
-#' @param markers Dataframe containing the SNP informations:
+#' @param markers Data-frame containing the SNP informations:
 #' "chr", "pos" (chromosomal coordinate), "snp" (name of the marker)
-#' @param treshold Desired treshold for the comparison, e.g. 
+#' @param threshold Desired threshold for the comparison, e.g. 
 #' if 0.5 two calls will be treated as the same if sharing 50% or 
 #' more of the markers
 #' @param met.a Name of the algorithm/pipeline of the first dataset, 
@@ -54,7 +62,7 @@
 #' @param met.b Name for the second dataset
 #' @param comp.type type of comparison, can be either "inter", "matched"
 #' or "case/control"
-#' @param min.markers minum number of marker a calls need to contains 
+#' @param min.markers minimum number of marker a calls need to contains 
 #' @param n.cores number of CPU core to use 
 #' @param keepCols set it to F in order to discard the intermediate 
 #' colums from \code{inter_comp} and \code{locus}.
@@ -65,24 +73,8 @@
 #' 
 #' @author Simone Montalbano simone.montalbano@protonmail.com
 
-# Nel caso "inter" il primo input dovrebbe essere i risultati che si vogliono 
-# preservare maggiormente (del secondo input andranno tenute le sole calls non 
-# presenti nel primo).
-# Nel caso "matched" il primo input deve essere i casi e il secondo i controlli.
-# Al momento confronta per id famiglia
-# 
-# "case/control" is the same as "inter" but assume "one-file one-sample", 
-# thus expect in.a = case, in.b = control, and return the call in the case
-# but not in the control. This is useful dealing with a cancer sample with
-# the control sample being from non-cancer tissue of the same individual.
-# 
-# Required files:   - two dataframe containing CNV calls (input.a, input.b)
-#                   - a dataframe containing the markers positions and names
-
-
-
 inter_comp <- 
-    function(in.a, in.b, markers, treshold = 0.5, met.a = "methodA", 
+    function(in.a, in.b, markers, threshold = 0.5, met.a = "methodA", 
              met.b = "methodB", comp.type = "inter", min.markers = 10,
              n.cores = 4, keepCols = T) {
         require(dplyr)
@@ -110,7 +102,7 @@ inter_comp <-
         
         
         snps <- markers %>% arrange(pos) %>% arrange(chr)
-        tr <- treshold
+        tr <- threshold
         
         ## Functions
         
