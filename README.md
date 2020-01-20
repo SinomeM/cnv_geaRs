@@ -5,4 +5,4 @@ The following packages are required for cnvgeaRs functions to work:
 "dplyr", "magrittr", "ggplot2", "data.table", "foreach", "doParallel", 
 "RcppRoll", "stats".
 
-Pre-built R package is provided.
+Pre-built R package is provided, see "release".
