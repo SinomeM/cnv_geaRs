@@ -1,4 +1,5 @@
 ### This package was one of the results of my thesis project and has been partially integrated into much more feature rich package
+Available here https://github.com/SinomeM/CNVgears 
 
 ## cnv_geaRs
 Small set of R functions to analyze Copy Number Variations data.
