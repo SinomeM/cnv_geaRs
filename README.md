@@ -1,4 +1,6 @@
-# cnv_geaRs
+### This package was one of the results of my thesis project and has been partially integrated into much more feature rich package
+
+## cnv_geaRs
 Small set of R functions to analyze Copy Number Variations data.
 
 The following packages are required for cnvgeaRs functions to work:
